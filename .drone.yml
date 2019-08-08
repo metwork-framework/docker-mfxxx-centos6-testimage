@@ -1,0 +1,31 @@
+# automatically generated from https://github.com/metwork-framework/resources/blob/master/cookiecutter/%7B%7Bcookiecutter.repo%7D%7D/docker-mfxxx-yyy-testimage_drone.yml)
+
+
+
+
+
+pipeline:
+  docker:
+    image: metwork/drone-docker-specific-image:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /root:/root
+    commands:
+      - HASH_BEFORE=`docker images -q metwork/mfxxx-centos6-testimage:${DRONE_BRANCH}`
+      - if test "${DRONE_BRANCH}" = "master"; then EXTRA_TAGS="-t metwork/mfxxx-centos6-testimage:latest"; else EXTRA_TAGS=""; fi
+      - docker build -t metwork/mfxxx-centos6-testimage:${DRONE_BRANCH} $${EXTRA_TAGS} --build-arg BRANCH=${DRONE_BRANCH} --build-arg CACHEBUST=${DRONE_BUILD_NUMBER} .
+      - HASH_AFTER=`docker images -q metwork/mfxxx-centos6-testimage:${DRONE_BRANCH}`
+      - if test "$${HASH_BEFORE}" = "$${HASH_AFTER}"; then
+          touch .drone_downstream_bypass;
+        else
+          if test "${DRONE_BRANCH}" = "master"; then
+            docker push metwork/mfxxx-centos6-testimage:${DRONE_BRANCH};
+            docker push metwork/mfxxx-centos6-testimage:latest;
+          elif test "${DRONE_BRANCH}" = "integration"; then
+            docker push metwork/mfxxx-centos6-testimage:${DRONE_BRANCH};
+          fi;
+        fi
+    when:
+      event: push
+
+branches: [ master, integration, experimental*, release_* ]
