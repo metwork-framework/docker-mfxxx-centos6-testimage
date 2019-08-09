@@ -1,6 +1,8 @@
 # automatically generated from https://github.com/metwork-framework/resources/blob/master/cookiecutter/%7B%7Bcookiecutter.repo%7D%7D/docker-mfxxx-yyy-testimage_Dockerfile)
 
 
+    
+    
 
 
 ARG BRANCH=master
