@@ -6,7 +6,7 @@
 
 
 ARG BRANCH=master
-FROM centos:centos6 as yum_cache
+FROM metwork/centos6:latest as yum_cache
 ARG BRANCH
 RUN echo -e "[metwork_${BRANCH}]\n\
 name=Metwork Continuous Integration Branch ${BRANCH}\n\
